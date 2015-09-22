@@ -23,7 +23,7 @@
                     <div class="row">
 
                         <div class="form-body">
-                            <div class="col-md-8">
+                            <div class="col-md-5">
 
                                 <div class="form-group">
                                     <label>No. Gaji</label>
@@ -35,6 +35,7 @@
                                                id="id_userId" required="" value="<?php echo $this->session->userdata('user_id');  ?>"
                                                readonly
                                             >
+                                        <input type="text" name="tglTrans" id="idTglTrans" class="hidden" value="<?php echo $this->session->userdata('tglD');?>">    
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -57,6 +58,9 @@
                                     </div>
 
                                 </div>
+                            </div>
+                            <!--end <div class="col-md-6"> 1 -->
+                            <div class="col-md-7">
                                 <div class="form-group">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -123,7 +127,7 @@
                                             <input type="text" class="form-control kanan nomor input-small"
                                                    name="jmlAngs"
                                                    id="id_jmlAngs" required=""
-                                                    placeholder="" readonly
+                                                   placeholder="" readonly
                                                 >
                                         </div>
                                         <div class="col-md-2">
@@ -138,32 +142,103 @@
                                                    id="id_sukuBunga" required=""
                                                 >
                                         </div>
-
                                     </div>
-
                                 </div>
-
-
-                            </div>
-                            <!--end <div class="col-md-6"> 1 -->
-                            <div class="col-md-4">
-
-
                             </div>
                         </div>
-
                     </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Gaji pokok</label>
+                                        <input name="gajiPokok" id="idGajiPokok"
+                                               class="form-control form-control-inline nomor kanan"
+                                                type="text"
+                                               placeholder="" >
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Potongan perusahaan (Loan)</label>
+                                        <input name="potPerush" id="idpotPerush"
+                                               class="form-control form-control-inline nomor kanan"
+                                               type="text"
+                                               placeholder="" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+
+                        </div>
+                    </div>
+                    <!--<div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>1/3 Gaji</label>
+                                        <input name="gajiPokok13" id="idGajiPokok13"
+                                               class="form-control form-control-inline"
+                                               type="text"
+                                               readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Potongan koperasi</label>
+                                        <input name="potKoperasi" id="idpotKoperasi"
+                                               class="form-control form-control-inline"
+                                               type="text"
+                                               readonly >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>KB Plus Bunga</label>
+                                        <input name="gajiPokok13" id="idGajiPokok13"
+                                               class="form-control form-control-inline"
+                                               type="text"
+                                               placeholder="">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>KB bersih</label>
+                                        <input name="potKoperasi" id="idpotKoperasi"
+                                               class="form-control form-control-inline"
+                                               type="text"
+                                               placeholder="" >
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>KB bersih</label>
+                                        <input name="potKoperasi" id="idpotKoperasi"
+                                               class="form-control form-control-inline"
+                                               type="text"
+                                               placeholder="" >
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>-->
+                    <hr>
                     <!--END ROW 1 -->
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-actions">
-                                <button name="btnSave" class="btn blue" id="id_btnSave">
-                                    <i class="m-icon-swapright m-icon-white"></i> Simulasi
-                                </button>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-8">
+                                        <button name="btnSave" class="btn blue" id="id_btnSave">
+                                            <i class="m-icon-swapright m-icon-white"></i> Simulasi
+                                        </button>
 
-                                <button id="id_btnBatal" type="reset" class="btn default">
-                                    <i class="fa fa-refresh"></i> Batal
-                                </button>
+                                        <button id="id_btnBatal" type="reset" class="btn default">
+                                            <i class="fa fa-refresh"></i> Batal
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -232,12 +307,21 @@
     $(".menu_root").removeClass('start active open');
     $("#menu_root_1").addClass('start active open');
     // END MENU OPEN
+    $('.nomor').val('0.00');
+    $(".nomor").focus(function(){
+        if($(this).val() == 0 || $(this).val() == 0.00){
+            $(this).val('');
+        }
+    });
     $(".nomor").focusout(function(){
         if ($(this).val() == '') {
-            $(this).val('0');
+            $(this).val('0.00');
+        }else if($(this).val() == 0){
+            $(this).val('0.00');
         }else{
-            var angka =$(this).val();
-            $(this).val(number_format(angka));
+            var angka = $(this).val();
+            var result = number_format(angka,2);
+            $(this).val(result);
         }
     });
     $('.nomor').keyup(function(){

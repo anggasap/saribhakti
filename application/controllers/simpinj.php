@@ -117,6 +117,61 @@ class Simpinj extends CI_Controller
                 'angsPokok' => round($angsuranPokok),
                 'angsBunga' => $angsuranBunga
             );
+            $gajiPokok  = trim($this->input->post('gajiPokok'));
+            $gajiPokok  = str_replace(',', '', $gajiPokok);
+
+            $potPerush  = trim($this->input->post('potPerush'));
+            $potPerush  = str_replace(',', '', $potPerush);
+
+            $b      = 1/3 * $gajiPokok;
+            $mNoRek  = $this->simPinjM->getRekKredit($nasabahID);;//
+            $cNoRek  = $mNoRek[0]->no_rekening;
+            
+            $tglTrans = date('Y-m-d',strtotime($this->input->post ( 'tglTrans')));
+            
+            //No Rekening selain cadangan dan terencana
+            $noRekEx = $this->simPinjM->getRekKredit($nasabahID);
+            foreach($noRekEx as $cNoRek){
+            	
+            }
+            
+            $rows = $this->kreditmodel->getNilaiTagihan( $kode,$tglTrans );
+            foreach ( $rows as $row )
+            	$array1 = array (
+            		'Jpokok' => $row->JPokok,
+            		'Jbunga' => $row->JBunga,
+            		'Jdenda' => $row->JDenda,
+            		'Jadmin' => $row->JAdmin,
+            		'Ladmin' => $row->LAdmin
+            		);
+            $rows2 = $this->kreditmodel->getNilaiSudahBayar( $kode,$bln,$thn );
+            foreach ( $rows2 as $row2 )
+            	$array2 = array (
+            		'Bpokok' => $row2->BPokok,
+            		'Bbunga' => $row2->BBunga,
+            		'Bdenda' => $row2->BDenda,
+            		'Badmin' => $row2->BAdmin,
+            		'Padmin' => $row2->PAdmin
+            	);
+            $pokok_angsur=$array1['Jpokok']-$array2['Bpokok'];
+            $bunga_angsur=$array1['Jbunga']-$array2['Bbunga'];
+			$denda_angsur=$array1['Jdenda']-$array2['Bdenda'];
+            $badmin_angsur=$array1['Jadmin']-$array2['Badmin'];
+            $padmin_angsur=$array1['Ladmin']-$array2['Padmin'];
+            foreach ( $rows2 as $row2 )
+            	$array = array (
+            				'pokok_angsur' => $pokok_angsur,
+            				'bunga_angsur' => $bunga_angsur,
+            				'denda_angsur' => $denda_angsur,
+            				'badmin_angsur' => $badmin_angsur,
+            				'padmin_angsur' => $padmin_angsur
+            				);
+            				
+           // }
+            /*foreach($noRek as $cNoRek){
+
+            }*/
+
 
         }elseif($typePinj==2){
             $angsuranBunga = ($sukuBunga/100)/360 * $jmlPinj * ($jmlAngs) ;

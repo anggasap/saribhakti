@@ -183,6 +183,13 @@
                             </table>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+
+
+                        </div>
+
+                    </div>
 
                 <?php
                 } elseif ($typePinj == 2) {

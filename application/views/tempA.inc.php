@@ -14,6 +14,9 @@
 	<div class="page-header-inner">
 		<!-- BEGIN LOGO -->
 		<div class="page-logo">
+			<input type="hidden" id="id_session_user" value="<?php echo $this->session->userdata('nama');?>" />
+            <input type="hidden" id="id_session_user_id" value="<?php echo $this->session->userdata('user_id');?>" />  
+            <input type="hidden" id="id_session_tgl_D" value="<?php echo $this->session->userdata('tglD');?>" />
 			<a href="index.html">
 			<img src="<?php echo base_url('metronic/img/microtech_logo_header.png'); ?>" alt="logo" class="logo-default"/>
 			</a>
