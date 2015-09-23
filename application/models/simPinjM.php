@@ -25,7 +25,7 @@ GROUP BY DATAMASTER.NO_REKENING ";
         $query = $this->db->query($sql);
         return $query->result();
     }
-	public function get_nilai_tagihan_pokok($kode,$tglsys) {
+	public function getNilaiTagihan($kode,$tglsys) {
     	$sql="SELECT kredit.type_pinjaman,kredit.denda_per_angsuran,kredit.tgl_realisasi,kredit.satuan_waktu_angsuran,
 		         kredit.pokok_tunggakan_awal +
 	             sum(if(floor(my_kode_trans/100)=2,pokok_trans,0)) as JPokok,
@@ -42,7 +42,7 @@ GROUP BY DATAMASTER.NO_REKENING ";
     	$query = $this->db->query($sql);
     	return $query->result ();
     }
-    public function get_nilai_sudah_bayar($kode) {
+    public function getNilaiSudahBayar($kode) {
     	$sql="SELECT kredit.type_pinjaman,kredit.denda_per_angsuran,kredit.tgl_realisasi,kredit.satuan_waktu_angsuran, 
     			sum(if(floor(my_kode_trans/100)=3 and my_kode_trans <> 395,pokok_trans,0)) + 
     			sum(if(floor(my_kode_trans/100)=3 and my_kode_trans <> 395,Disc_Pokok,0)) as BPokok, 
@@ -58,7 +58,11 @@ GROUP BY DATAMASTER.NO_REKENING ";
     	$query = $this->db->query($sql);
     	return $query->result ();
     }
-
+    public function getTglBuka($nasabahId){
+    	$sql = "select tgl_buka from nasabah where nasabah_id = '$nasabahId'";
+    	$query = $this->db->query($sql);
+    	return $query->result();
+    }
 
 }
 

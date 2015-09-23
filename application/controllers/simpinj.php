@@ -47,44 +47,10 @@ class Simpinj extends CI_Controller
         $typePinj = trim($this->input->post('optionsRadios'));
         $jmlPinj = trim($this->input->post('jumlahPinj'));
         $jmlPinj = str_replace(',', '', $jmlPinj);
+        $jumlahPinj = number_format($jmlPinj,2);
         $jmlAngs = trim($this->input->post('jmlAngs'));
         $sukuBunga = trim($this->input->post('sukuBunga'));
-/*
-        $tgl = $this->input->post('tglMulai');
-        $timestamp1 = strtotime($tgl);
-        $tglMulai = date('Y-m-d', $timestamp1);
 
-        $tgl = $this->input->post('tglAkhir');
-        $timestamp2 = strtotime($tgl);
-        $tglAkhir = date('Y-m-d', $timestamp2);
-
-        $year1 = substr($tglMulai,0,4);
-        $year2 = substr($tglAkhir,0,4);
-
-        $month1 = substr($tglMulai,5,2);
-        $month2 = substr($tglAkhir,5,2);
-
-
-
-
-        $jmlBulan = (($year2 - $year1) * 12) + ($month2 - $month1);
-*/
-        //$jml_koma = $this->input->post('txtJml');
-        //$jml = str_replace(',', '', $jml_koma);
-
-        /*
-
-        if ($jml <= 0) {
-            $this->session->set_flashdata('error', 'Jumlah transaksi harus lebih dari nol');
-            redirect('kasumum/kas_umum');
-        } else {
-            $this->kasmodel->insert_teller($data_kas);
-            $this->kasmodel->add_counter($data);
-            // kembalikan ke kas_umum_view
-            $this->session->set_flashdata('success', 'Data berhasil diisimpan');
-            redirect('kasumum/kas_umum');
-        }
-        */
 
         if(($typePinj==3 ) || ($typePinj==4 ) || ($typePinj==5 )){
             $angsuranPokok = $jmlPinj/$jmlAngs;
@@ -93,7 +59,7 @@ class Simpinj extends CI_Controller
                 'nasabahID'=>$nasabahID,
                 'nama' =>$nama,
                 'typePinj' => $typePinj,
-                'jmlPinj'=>$jmlPinj,
+                'jmlPinj'=>$jumlahPinj,
                 'jmlAngs'=>$jmlAngs,
                 'sukuBunga'=>$sukuBunga,
                 'angsPokok' => round($angsuranPokok),
@@ -107,79 +73,107 @@ class Simpinj extends CI_Controller
                 $jmlPinj = $jmlPinj - $angsuranPokok;
                 //$angsBef = $angsuranBunga[$i];
             }
-            $data=array(
-                'nasabahID'=>$nasabahID,
-                'nama' =>$nama,
-                'typePinj' => $typePinj,
-                'jmlPinj'=>$jmlPinj,
-                'jmlAngs'=>$jmlAngs,
-                'sukuBunga'=>$sukuBunga,
-                'angsPokok' => round($angsuranPokok),
-                'angsBunga' => $angsuranBunga
-            );
+            
             $gajiPokok  = trim($this->input->post('gajiPokok'));
             $gajiPokok  = str_replace(',', '', $gajiPokok);
 
             $potPerush  = trim($this->input->post('potPerush'));
             $potPerush  = str_replace(',', '', $potPerush);
 
-            $b      = 1/3 * $gajiPokok;
+            $gajiPokok13      = 1/3 * $gajiPokok;
             $mNoRek  = $this->simPinjM->getRekKredit($nasabahID);;//
             $cNoRek  = $mNoRek[0]->no_rekening;
             
+            $kewajibanBayar = 0;
             $tglTrans = date('Y-m-d',strtotime($this->input->post ( 'tglTrans')));
             
             //No Rekening selain cadangan dan terencana
             $noRekEx = $this->simPinjM->getRekKredit($nasabahID);
             foreach($noRekEx as $cNoRek){
-            	
+            	$noRekKre = $cNoRek->no_rekening;
+            	$rows = $this->simPinjM->getNilaiTagihan( $noRekKre,$tglTrans );
+            	foreach ( $rows as $row )
+            		$array1 = array (
+            				'Jpokok' => $row->JPokok,
+            				'Jbunga' => $row->JBunga,
+            				'Jdenda' => $row->JDenda,
+            				'Jadmin' => $row->JAdmin,
+            				'Ladmin' => $row->LAdmin
+            		);
+            		$rows2 = $this->simPinjM->getNilaiSudahBayar( $noRekKre );
+            		foreach ( $rows2 as $row2 )
+            			$array2 = array (
+            					'Bpokok' => $row2->BPokok,
+            					'Bbunga' => $row2->BBunga,
+            					'Bdenda' => $row2->BDenda,
+            					'Badmin' => $row2->BAdmin,
+            					'Padmin' => $row2->PAdmin
+            			);
+            		$pokok_angsur=$array1['Jpokok']-$array2['Bpokok'];
+            		$bunga_angsur=$array1['Jbunga']-$array2['Bbunga'];
+            		$kewajiban	= $pokok_angsur + $bunga_angsur;
+            		$kewajibanBayar	= $kewajibanBayar + $kewajiban; 
+            		
+
+            }//foreach($noRekEx as $cNoRek){
+            if($kewajibanBayar<0){
+            	$kewajibanBayar=0;
+            }
+            $kbPlusBunga = $gajiPokok13-$potPerush-$kewajibanBayar;//$e
+            $tglBuka = $this->simPinjM->getTglBuka( $nasabahID );
+            $tglBuka = $tglBuka[0]->tgl_buka;
+            $date1	= strtotime($tglBuka);//$tglBuka;
+            $date2 = strtotime($this->input->post ( 'tglTrans'));
+            
+            $diff = abs($date2 - $date1);
+            
+            $bulan = floor($diff / (365*60*60*24)) *12;
+            
+            if($bulan>13 && $bulan<=36){
+            	$kali = 5;
+            }elseif($bulan>37 && $bulan<=48){
+            	$kali = 8;
+            }elseif($bulan>49 && $bulan<=60){
+            	$kali = 13;
+            }elseif($bulan>61 && $bulan<=72){
+            	$kali = 19;
+            }elseif($bulan>73){
+            	$kali = 30;
+            }else{
+            	$kali = 1;
             }
             
-            $rows = $this->kreditmodel->getNilaiTagihan( $kode,$tglTrans );
-            foreach ( $rows as $row )
-            	$array1 = array (
-            		'Jpokok' => $row->JPokok,
-            		'Jbunga' => $row->JBunga,
-            		'Jdenda' => $row->JDenda,
-            		'Jadmin' => $row->JAdmin,
-            		'Ladmin' => $row->LAdmin
-            		);
-            $rows2 = $this->kreditmodel->getNilaiSudahBayar( $kode,$bln,$thn );
-            foreach ( $rows2 as $row2 )
-            	$array2 = array (
-            		'Bpokok' => $row2->BPokok,
-            		'Bbunga' => $row2->BBunga,
-            		'Bdenda' => $row2->BDenda,
-            		'Badmin' => $row2->BAdmin,
-            		'Padmin' => $row2->PAdmin
-            	);
-            $pokok_angsur=$array1['Jpokok']-$array2['Bpokok'];
-            $bunga_angsur=$array1['Jbunga']-$array2['Bbunga'];
-			$denda_angsur=$array1['Jdenda']-$array2['Bdenda'];
-            $badmin_angsur=$array1['Jadmin']-$array2['Badmin'];
-            $padmin_angsur=$array1['Ladmin']-$array2['Padmin'];
-            foreach ( $rows2 as $row2 )
-            	$array = array (
-            				'pokok_angsur' => $pokok_angsur,
-            				'bunga_angsur' => $bunga_angsur,
-            				'denda_angsur' => $denda_angsur,
-            				'badmin_angsur' => $badmin_angsur,
-            				'padmin_angsur' => $padmin_angsur
-            				);
+            $fKbBersih = trim($this->input->post('fkb'))/100;
+            $kbBersih = $fKbBersih *$kbPlusBunga;
+            $maxPinj = $kbBersih * $kali;
+            $data=array(
+            		'nasabahID'=>$nasabahID,
+            		'nama' =>$nama,
+            		'typePinj' => $typePinj,
+            		'jmlPinj'=>$jumlahPinj,
+            		'skBunga'=>$sukuBunga,
+            		'jmlAngs'=>$jmlAngs,
+            		'sukuBunga'=>$sukuBunga,
+            		'angsPokok' => round($angsuranPokok),
+            		'angsBunga' => $angsuranBunga,
+            		'kewajiban'	=> $kewajibanBayar,//$d
+            		'gajiPokok'=> $gajiPokok,//$a
+            		'gajiPokok13'=>$gajiPokok13,//$b
+            		'potPerush'=> $potPerush,//$c
+            		'kbPlusBunga'	=>$kbPlusBunga,//$e
+            		'kbBersih'=>$kbBersih,
+            		'maxPinj'=>$maxPinj
+            );
+            
+            
             				
-           // }
-            /*foreach($noRek as $cNoRek){
-
-            }*/
-
-
         }elseif($typePinj==2){
             $angsuranBunga = ($sukuBunga/100)/360 * $jmlPinj * ($jmlAngs) ;
             $data=array(
                 'nasabahID'=>$nasabahID,
                 'nama' =>$nama,
                 'typePinj' => $typePinj,
-                'jmlPinj'=>$jmlPinj,
+                'jmlPinj'=>$jumlahPinj,
                 'jmlAngs'=>$jmlAngs,
                 'sukuBunga'=>$sukuBunga,
                 'angsPokok' => $jmlPinj,

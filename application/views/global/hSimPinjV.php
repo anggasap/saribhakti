@@ -36,6 +36,16 @@
                     </div>
                     <div class="row">
                         <div class="col-md-1"></div>
+                        <div class="col-md-2">Jml pinjaman</div>
+                        <div class="col-md-2"><?php echo $jmlPinj; ?> </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">Suku bunga</div>
+                        <div class="col-md-2"><?php echo $skBunga; ?> %</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
                         <div class="col-md-2">Jangka waktu</div>
                         <div class="col-md-2"><?php echo $jmlAngs; ?> bulan</div>
                     </div>
@@ -103,6 +113,7 @@
                     </div>
                 <?php
                 } elseif ($typePinj == 1) {
+                	
                     ?>
                     <div class="row">
                         <div class="col-md-1"></div>
@@ -113,6 +124,16 @@
                         <div class="col-md-1"></div>
                         <div class="col-md-2">Nama</div>
                         <div class="col-md-2"><?php echo $nama; ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">Jml pinjaman</div>
+                        <div class="col-md-2"><?php echo $jmlPinj; ?> </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">Suku bunga</div>
+                        <div class="col-md-2"><?php echo $skBunga; ?> %</div>
                     </div>
                     <div class="row">
                         <div class="col-md-1"></div>
@@ -145,13 +166,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <table class='table table-striped table-bordered table-advance table-hover' id="">
                                 <thead>
                                 <tr>
-                                    <th width='10%'>Angs Ke</th>
+                                    <th width='15%'>Angs Ke</th>
                                     <!--<th width='20%' >Tanggal</th>-->
-                                    <th width='45%'>Pokok</th>
+                                    <th width='40%'>Pokok</th>
                                     <th width='45%'>Jasa</th>
                                 </tr>
                                 </thead>
@@ -182,6 +203,64 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="col-md-6">
+                        	<table class="table table-striped table-bordered table-advance table-hover">
+                        		<thead>
+                                <tr>
+                                    <th width='65%'>Keterangan</th>
+                                    <th width='10%'>&nbsp;</th>
+                                    <th width='25%'>Nominal</th>
+                                </tr>
+                                </thead>
+                        		<tbody>
+                        			<tr>
+                                    	<td>Gaji Pokok</td>
+                                    	<td></td>
+                                    	<td class="kanan"><?php echo number_format($gajiPokok,2) ?></td>
+                                	</tr>
+                                	<tr>
+                                    	<td>1/3 Upah Bulanan</td>
+                                    	<td></td>
+                                    	<td class="kanan"><?php echo number_format($gajiPokok13,2) ?></td>
+                                	</tr>
+                                	<tr>
+                                    	<td>Potongan perusahaan</td>
+                                    	<td></td>
+                                    	<td class="kanan"><?php echo number_format($potPerush,2) ?></td>
+                                	</tr>
+                                	<tr>
+                                    	<td>Potongan koperasi (selain terencana dan cadangan)</td>
+                                    	<td></td>
+                                    	<td class="kanan"><?php echo number_format($kewajiban,2) ?></td>
+                                	</tr>
+                                	<tr>
+                                    	<td>KB Plus bunga</td>
+                                    	<td></td>
+                                    	<td class="kanan"><?php echo number_format($kbPlusBunga,2) ?></td>
+                                	</tr>
+                                	<tr>
+                                    	<td>KB Bersih</td>
+                                    	<td></td>
+                                    	<td class="kanan"><?php echo number_format($kbBersih,2) ?></td>
+                                	</tr>
+                                	<tr>
+                                    	<td>Maksimal pinjaman</td>
+                                    	<td></td>
+                                    	<td class="kanan"><?php echo number_format($maxPinj,2) ?></td>
+                                	</tr>
+                                	<tr>
+                                    	<td>Saldo Akhir pinjaman Koperasi</td>
+                                    	<td></td>
+                                    	<td class="kanan"><?php echo number_format(0,2) ?></td>
+                                	</tr>
+                                	<tr>
+                                    	<td>Pinjaman disetujui</td>
+                                    	<td></td>
+                                    	<td class="kanan"><?php echo number_format($maxPinj,2) ?></td>
+                                	</tr>
+                        		</tbody>
+                        	</table>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -203,6 +282,16 @@
                         <div class="col-md-1"></div>
                         <div class="col-md-2">Nama</div>
                         <div class="col-md-2"><?php echo $nama; ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">Jml pinjaman</div>
+                        <div class="col-md-2"><?php echo $jmlPinj; ?> </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">Suku bunga</div>
+                        <div class="col-md-2"><?php echo $skBunga; ?> %</div>
                     </div>
                     <div class="row">
                         <div class="col-md-1"></div>

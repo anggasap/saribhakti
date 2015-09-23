@@ -170,7 +170,17 @@
                             </div>
                         </div>
                         <div class="col-md-7">
-
+                        	<div class="form-group">
+                        		<div class="row">
+                                    <div class="col-md-2">
+                                    	<label>FKB</label>
+                                    	<select name="fkb" class="form-control">
+                                    		<option value='69'>69%</option>
+                                    		<option value='75'>75%</option>
+                                    	</select>
+                                    </div>
+                                </div>    
+							</div>	
                         </div>
                     </div>
                     <!--<div class="row">
