@@ -40,6 +40,15 @@ class Homemodel extends CI_Model
 	   return $rows; // returning rows, not row
 	}
    // end angga
+	public function updatePassword($userId,$data){
+		$model1 = $this->db->where('nasabah_id', $userId);
+		$model2 = $this->db->update('nasabah', $data);
+		if ($model1 && $model2){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }
 
 /* End of file homeModel.php */
